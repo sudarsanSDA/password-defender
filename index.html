@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,170 +9,36 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
     <div id="game-container">
 
         <!-- Splash Screen -->
-        <div id="intro-screen" class="overlay visible">
-            <div class="overlay-content">
-                <h1>Password Defender</h1>
-                <p>The Citadel's firewall is weakening. You must create progressively stronger passwords to energize the
-                    shields and repel the glitch swarm.</p><button id="start-btn">To the Mainframe</button>
-            </div>
-        </div>
-
-        <!-- Main Menu Screen -->
-        <div id="main-menu-screen" class="overlay">
-            <div class="overlay-content">
-                <h1>Select Protocol</h1>
-                <div id="level-select-container"></div>
-            </div>
-        </div>
-
+        <div id="intro-screen" class="overlay visible"><div class="overlay-content"><h1>Password Defender</h1><p>The Citadel's firewall is weakening. You must create progressively stronger passwords to energize the shields and repel the glitch swarm.</p><button id="start-btn">To the Mainframe</button></div></div>
+        <!-- Main Menu -->
+        <div id="main-menu-screen" class="overlay"><div class="overlay-content"><h1>Select Protocol</h1><div id="level-select-container"></div></div></div>
+        
         <!-- Game Screen -->
         <div id="game-screen" class="hidden">
-            <!-- Visuals -->
             <div id="game-world">
                 <div id="game-background"></div>
                 <div id="world-content">
                     <div id="castle-container">
                         <div id="shields-container"></div>
-                        <svg id="castle-svg-advanced" viewBox="0 0 400 350">
-    <defs>
-        <!-- Gradients for realistic lighting -->
-        <linearGradient id="adv-wall-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#a2b2c8"/>
-            <stop offset="100%" stop-color="#647791"/>
-        </linearGradient>
-        <linearGradient id="adv-roof-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#9b59b6"/>
-            <stop offset="100%" stop-color="#5e3370"/>
-        </linearGradient>
-        <linearGradient id="adv-door-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#7a5548"/>
-            <stop offset="100%" stop-color="#543b32"/>
-        </linearGradient>
-         <linearGradient id="adv-banner-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#e74c3c"/>
-            <stop offset="100%" stop-color="#c0392b"/>
-        </linearGradient>
-
-        <!-- A more subtle shadow effect -->
-        <filter id="adv-shadow" x="-50%" y="-50%" width="200%" height="200%">
-            <feDropShadow dx="2" dy="10" stdDeviation="8" flood-color="#000" flood-opacity="0.35"/>
-        </filter>
-
-        <!-- Pattern for brick/stone texture -->
-        <pattern id="stone-texture" patternUnits="userSpaceOnUse" width="20" height="20">
-            <rect width="20" height="20" fill="#75859e" />
-            <path d="M 0 10 L 20 10 M 10 0 L 10 20" stroke="#647791" stroke-width="1"/>
-        </pattern>
-    </defs>
-    
-    <g filter="url(#adv-shadow)">
-
-        <!-- ===== Base Platform ===== -->
-        <path d="M 10 340 L 390 340 L 400 320 L 0 320 Z" fill="#4a5668"/>
-        
-        <!-- ===== Main Keep / Central Structure ===== -->
-        <!-- Main Wall with texture -->
-        <rect x="90" y="140" width="220" height="180" fill="url(#stone-texture)" />
-        <!-- Battlement on top of Main Wall -->
-        <path d="M 90 140 L 90 130 L 110 130 L 110 140 L 130 140 L 130 130 L 150 130 L 150 140 L 170 140 L 170 130 L 190 130 L 190 140 L 210 140 L 210 130 L 230 130 L 230 140 L 250 140 L 250 130 L 270 130 L 270 140 L 290 140 L 290 130 L 310 130 L 310 140 Z" fill="url(#adv-wall-gradient)"/>
-        
-        <!-- ===== Central Tower ===== -->
-        <path d="M 140 140 L 140 60 L 260 60 L 260 140 Z" fill="url(#adv-wall-gradient)"/>
-        <!-- Battlement for Central Tower -->
-        <path d="M 140 60 L 140 50 L 155 50 L 155 60 L 170 60 L 170 50 L 185 50 L 185 60 L 200 60 L 200 50 L 215 50 L 215 60 L 230 60 L 230 50 L 245 50 L 245 60 L 260 60" fill="url(#adv-wall-gradient)"/>
-        
-        <!-- Main Spire/Roof -->
-        <polygon points="145,50 200,10 255,50" fill="url(#adv-roof-gradient)"/>
-        
-        <!-- Flag -->
-        <line x1="200" y1="10" x2="200" y2="-10" stroke="#444" stroke-width="3"/>
-        <path d="M 200 -10 L 240 -10 L 230 -5 L 240 0 L 200 0 Z" fill="url(#adv-banner-gradient)"/>
-
-        <!-- Grand Window -->
-        <path d="M 185 100 C 185 80, 215 80, 215 100 L 215 120 L 185 120 Z" fill="#333"/>
-        <path d="M 188 100 C 188 83, 212 83, 212 100 L 212 117 L 188 117 Z" fill="#f0e68c"/>
-        <circle id="adv-window-glow" cx="200" cy="100" r="10" fill="#ffc107" opacity="0.8" style="animation: pulse 3s infinite;"/>
-
-
-        <!-- ===== Gatehouse ===== -->
-        <rect x="160" y="250" width="80" height="70" fill="#000" opacity="0.2"/>
-        <path d="M 170 320 L 170 270 C 170 250, 230 250, 230 270 L 230 320 Z" fill="url(#adv-door-gradient)"/>
-
-        <!-- ===== Left Outer Tower ===== -->
-        <path d="M 40 320 L 40 120 L 120 120 L 120 320 Z" fill="url(#adv-wall-gradient)"/>
-        <!-- Left Tower Battlements -->
-        <path d="M 40 120 L 40 110 L 60 110 L 60 120 L 80 120 L 80 110 L 100 110 L 100 120 L 120 120" fill="#444"/>
-        
-        <!-- Left Top Turret -->
-        <path d="M 55 110 L 55 80 L 105 80 L 105 110 Z" fill="url(#adv-wall-gradient)"/>
-        <polygon points="55,80 80,60 105,80" fill="url(#adv-roof-gradient)"/>
-        <!-- Window -->
-        <rect x="73" y="150" width="14" height="30" fill="#222" rx="3"/>
-        
-        
-        <!-- ===== Right Outer Tower ===== -->
-        <path d="M 280 320 L 280 120 L 360 120 L 360 320 Z" fill="url(#adv-wall-gradient)"/>
-        <!-- Right Tower Battlements -->
-        <path d="M 280 120 L 280 110 L 300 110 L 300 120 L 320 120 L 320 110 L 340 110 L 340 120 L 360 120" fill="#444"/>
-
-        <!-- Right Top Turret -->
-        <path d="M 295 110 L 295 80 L 345 80 L 345 110 Z" fill="url(#adv-wall-gradient)"/>
-        <polygon points="295,80 320,60 345,80" fill="url(#adv-roof-gradient)"/>
-        <!-- Window -->
-        <rect x="313" y="150" width="14" height="30" fill="#222" rx="3"/>
-
-    </g>
-    
-    <!-- Animation for the glowing window -->
-    
-</svg>
+                        <svg id="castle-svg" viewBox="0 0 200 200"><defs><linearGradient id="wall-grad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#DFE1E6"/><stop offset="100%" stop-color="#BFC2CB"/></linearGradient><linearGradient id="roof-grad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#8E69A9"/><stop offset="100%" stop-color="#6C4586"/></linearGradient><pattern id="bricks" patternUnits="userSpaceOnUse" width="10" height="10"><path d="M 0 5 L 10 5 M 5 0 L 5 10" stroke="#BFC2CB" stroke-width="0.5"/></pattern><filter id="glow-filter"><feGaussianBlur stdDeviation="3" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter><filter id="shadow-filter"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter></defs><g id="citadel-base" filter="url(#shadow-filter)"><path d="M 10 180 L 190 180 L 190 170 C 170 160, 30 160, 10 170 Z" fill="#424242"/></g><g id="citadel-walls" filter="url(#shadow-filter)"><rect x="30" y="80" width="40" height="90" fill="url(#wall-grad)"/><rect x="130" y="80" width="40" height="90" fill="url(#wall-grad)"/><rect x="30" y="80" width="40" height="90" fill="url(#bricks)" opacity="0.2"/><rect x="130" y="80" width="40" height="90" fill="url(#bricks)" opacity="0.2"/><rect x="60" y="60" width="80" height="110" fill="url(#wall-grad)"/><rect x="60" y="60" width="80" height="110" fill="url(#bricks)" opacity="0.3"/><path d="M 60 60 L 60 50 L 75 50 L 75 60 L 90 60 L 90 50 L 110 50 L 110 60 L 125 60 L 125 50 L 140 50 L 140 60 Z" fill="url(#wall-grad)"/></g><g id="citadel-roofs"><polygon points="30,80 50,60 70,80" fill="url(#roof-grad)"/><polygon points="130,80 150,60 170,80" fill="url(#roof-grad)"/><polygon points="60,50 100,10 140,50" fill="url(#roof-grad)"/></g><g id="citadel-details"><path d="M90 100 C 90 90, 110 90, 110 100 L 110 115 L 90 115 Z" fill="#FFC107" filter="url(#glow-filter)"/><rect x="45" y="110" width="5" height="25" fill="#424242"/><rect x="150" y="110" width="5" height="25" fill="#424242"/><path d="M85 170 L 85 145 C 85 130, 115 130, 115 145 L 115 170 Z" fill="#424242"/></g></svg>
                     </div>
                 </div>
             </div>
-            <!-- UI Layer with fixed layout -->
             <div id="game-ui">
-                <div class="ui-header">
-                    <h2 id="level-title-display"></h2>
-                    <div id="wave-display"></div>
-                </div>
-                <div class="ui-center">
-                    <div id="message-display"></div>
-                </div>
-                <!-- Instructions are now part of the footer -->
-                <div class="ui-footer">
-                    <p id="level-instructions-display"></p>
-                    <div class="input-wrapper">
-                        <input type="text" id="password-input" placeholder="Enter protocol...">
-                        <button id="defend-btn">DEPLOY</button>
-                    </div>
-                </div>
+                <div class="ui-header"><h2 id="level-title-display"></h2><div id="wave-display"></div></div>
+                <div class="ui-center"><div id="message-display"></div></div>
+                <div class="ui-footer"><p id="level-instructions-display"></p><div class="input-wrapper"><input type="text" id="password-input" placeholder="Enter protocol..."><button id="defend-btn">DEPLOY</button></div></div>
             </div>
         </div>
 
         <!-- Overlays -->
-        <div id="level-complete-screen" class="overlay">
-            <div class="overlay-content">
-                <h2>Protocol Secure</h2>
-                <div id="star-rating"></div>
-                <p>High Score for this level: <span id="level-highscore-display">0</span></p>
-                <div class="button-group"><button id="replay-btn">Replay</button><button id="next-level-btn">Next
-                        Level</button><button id="main-menu-btn-from-win">Main Menu</button></div>
-            </div>
-        </div>
-        <div id="game-over-screen" class="overlay">
-            <div class="overlay-content">
-                <h2>SYSTEM BREACHED</h2>
-                <p>The protocol failed. The firewall has been compromised.</p><button
-                    id="main-menu-btn-from-lose">Return to Menu</button>
-            </div>
-        </div>
+        <div id="level-complete-screen" class="overlay"><div class="overlay-content"><h2>Protocol Secure</h2><div id="star-rating"></div><p>High Score for this level: <span id="level-highscore-display">0</span></p><div class="button-group"><button id="replay-btn">Replay</button><button id="next-level-btn">Next Level</button><button id="main-menu-btn-from-win">Main Menu</button></div></div></div>
+        <div id="game-over-screen" class="overlay"><div class="overlay-content"><h2>SYSTEM BREACHED</h2><p>The protocol failed. The firewall has been compromised.</p><button id="main-menu-btn-from-lose">Return to Menu</button></div></div>
     </div>
     <script src="js/game.js"></script>
 </body>
-
 </html>
