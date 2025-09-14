@@ -30,7 +30,7 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* --- Screen Management & Layout Fix --- */
+/* --- Screen & Layout --- */
 .hidden {
     display: none !important;
 }
@@ -50,10 +50,7 @@ body {
 
 #game-world {
     z-index: 1;
-    transition: filter var(--timing-med) var(--ease-out);
     display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 #game-ui {
@@ -70,7 +67,7 @@ body {
     text-align: center;
 }
 
-/* --- World Content (Background & Centered Castle) --- */
+/* --- World Content & Castle Centering --- */
 #game-background {
     inset: 0;
     position: absolute;
@@ -134,7 +131,6 @@ body {
 .ui-center {
     flex-grow: 1;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
@@ -168,9 +164,10 @@ body {
 
 #level-instructions-display {
     font-size: clamp(0.8rem, 2.5vw, 1rem);
-    margin-top: 15px;
-    min-height: 2.2em;
+    margin-bottom: 15px;
+    min-height: 1.2em;
     font-weight: 500;
+    padding: 0 10px;
 }
 
 #message-display {
@@ -190,7 +187,6 @@ body {
     transform: scale(1);
 }
 
-/* --- Input & Buttons --- */
 .input-wrapper {
     display: flex;
     flex-direction: column;
@@ -247,7 +243,7 @@ button:disabled {
     cursor: not-allowed;
 }
 
-/* --- Main Menu & Overlays --- */
+/* --- Overlays & Menus --- */
 .overlay {
     z-index: 100;
     background: rgba(10, 12, 30, 0.85);
@@ -270,6 +266,10 @@ button:disabled {
 .overlay-content {
     max-width: 500px;
     animation: slide-up var(--timing-med) var(--ease-out);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 @keyframes slide-up {
@@ -359,28 +359,35 @@ button:disabled {
     color: var(--c-star);
 }
 
+/* --- THIS IS THE BUG FIX --- */
 .button-group {
     display: flex;
     flex-direction: column;
     gap: 15px;
     margin-top: 20px;
     width: 100%;
+    /* On mobile, use max-width and margin:auto to center the column */
     max-width: 250px;
+    margin-inline: auto;
 }
 
 @media (min-width: 768px) {
-
-    .input-wrapper,
     .button-group {
         flex-direction: row;
-    }
-
-    #password-input {
-        width: 450px;
+        /* On desktop, use justify-content to center the row items */
+        justify-content: center;
+        max-width: none;
     }
 }
 
-/* --- VFX: Lasers, Shields, Hackers (Perfected) --- */
+@media (max-width: 350px) {
+    .button-group button {
+        font-size: 0.9rem;
+    }
+}
+
+
+/* VFX: Lasers, Shields, Hackers */
 .laser-beam {
     position: absolute;
     height: 3px;
@@ -389,7 +396,7 @@ button:disabled {
     border-radius: 2px;
     transform-origin: left center;
     box-shadow: 0 0 8px var(--c-hacker);
-    animation: fire-laser 0.3s var(--ease-out) forwards;
+    animation: fire-laser 0.4s var(--ease-out) forwards;
 }
 
 @keyframes fire-laser {
@@ -411,7 +418,7 @@ button:disabled {
     z-index: 21;
     background: rgba(255, 90, 90, 0.5);
     transform: translate(-50%, -50%) scale(0);
-    animation: spark-effect 0.3s var(--ease-out);
+    animation: spark-effect 0.4s var(--ease-out);
 }
 
 @keyframes spark-effect {
@@ -474,25 +481,20 @@ button:disabled {
 
 .hacker {
     position: fixed;
-    left: -100px;
+    transform: translateX(-150px);
     width: clamp(60px, 12vw, 90px);
     z-index: 15;
-    transition: left 2.5s cubic-bezier(0.4, 0, 0.6, 1);
+    transition: transform 2.5s cubic-bezier(0.4, 0, 0.6, 1);
     animation: float 4s ease-in-out infinite;
 }
 
 .hacker.attack {
-    left: calc(50% - clamp(130px, 30vw, 200px));
+    transform: translateX(calc(50vw - 100% - clamp(130px, 30vw, 200px)));
 }
 
 .hacker.retreat {
-    left: calc(100% + 100px);
+    transform: translateX(110vw);
     transition-duration: 1.5s;
-}
-
-.hacker svg {
-    animation: spin 10s linear infinite alternate;
-    transform-origin: center;
 }
 
 @keyframes float {

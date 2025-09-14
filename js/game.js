@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // A helper to make getting elements easier
+    // --- Element Helper ---
     const getEl = (id) => document.getElementById(id);
 
-    // --- Screen and UI Elements ---
+    // --- Screen & UI Elements ---
     const screens = { intro: getEl('intro-screen'), mainMenu: getEl('main-menu-screen'), game: getEl('game-screen'), levelComplete: getEl('level-complete-screen'), gameOver: getEl('game-over-screen') };
-    const passwordInput = getEl('password-input'), defendBtn = getEl('defend-btn'), castleContainer = getEl('castle-container'), shieldsContainer = getEl('shields-container');
+    const passwordInput = getEl('password-input'), defendBtn = getEl('defend-btn'), castleContainer = getEl('castle-container'), shieldsContainer = getEl('shields-container'), gameWorld = getEl('game-world');
     const levelSelectContainer = getEl('level-select-container'), waveDisplay = getEl('wave-display'), starRating = getEl('star-rating');
     const levelTitleDisplay = getEl('level-title-display'), levelInstructionsDisplay = getEl('level-instructions-display'), messageDisplay = getEl('message-display'), levelHighscoreDisplay = getEl('level-highscore-display');
     
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let isAttacking = false, currentLevelIndex = 0, currentWave = 0, failedAttempts = 0;
     let unlockedLevel = 1, highScores = [0,0,0,0,0];
 
-    // --- SVG Templates (Re-verified) ---
+    // --- SVG Templates ---
     const HACKER_SVG = () => `<svg viewBox="0 0 100 100"><defs><linearGradient id="h-g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FF8A8A"/><stop offset="100%" stop-color="#FF4040"/></linearGradient></defs><g transform="rotate(45 50 50)" style="filter: drop-shadow(0 0 5px var(--c-hacker))"><polygon points="50,0 100,50 50,100 0,50" fill="url(#h-g)"/><polygon points="50,15 85,50 50,85 15,50" fill="#200" opacity="0.5"/><polygon points="50,25 75,50 50,75 25,50" fill="var(--c-hacker)"/></g></svg>`;
     const SHIELD_SVG = (i) => `<svg viewBox="0 0 200 200" style="animation-duration: ${15+i*5}s; transform: scale(${1-i*0.2})"><defs><filter id="shield-glow"><feGaussianBlur stdDeviation="3.5"/></filter></defs><circle cx="100" cy="100" r="${80-i*15}" fill="none" stroke="var(--c-shield)" stroke-width="5" stroke-opacity="0.8" filter="url(#shield-glow)"/><circle cx="100" cy="100" r="${80-i*15}" fill="var(--c-shield)" fill-opacity="${0.15-i*0.05}"/></svg>`;
 
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         displayShields(isSuccess); createHackers(currentLevelIndex + 2);
         setTimeout(() => fireLasers(isSuccess), 2500);
-        setTimeout(() => handleAttackOutcome(isSuccess), 2800);
+        setTimeout(() => handleAttackOutcome(isSuccess), 2900);
     };
 
     const handleAttackOutcome = (isSuccess) => {
@@ -49,7 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
             showMessage("PROTOCOL FAILED!", true);
             castleContainer.classList.add('damage'); document.querySelectorAll('.shield').forEach(s => s.classList.add('shatter'));
             setTimeout(() => castleContainer.classList.remove('damage'), 400);
-            setTimeout(() => { if(failedAttempts < 3) startNextWave(); else showScreen('gameOver'); }, 2000);
+            if (failedAttempts < 3) { setTimeout(startNextWave, 2000); } 
+            else { setTimeout(() => showScreen('gameOver'), 1500); }
         }
     };
     
@@ -76,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const starHTML = '★'.repeat(starsAchieved) + '☆'.repeat(3 - starsAchieved);
             const btn = document.createElement('button');
             btn.className = `level-btn ${isUnlocked ? 'unlocked' : 'locked'}`;
-            btn.innerHTML = `<span class="level-number">${index + 1}</span><span class="level-stars">${highScores[index]>0 ? starHTML : ''}</span>`;
+            btn.innerHTML = `<span class="level-number">${index + 1}</span><span class="level-stars">${highScores[index] > 0 ? starHTML : ''}</span>`;
             if (isUnlocked) btn.onclick = () => startGame(index);
             levelSelectContainer.appendChild(btn);
         });
@@ -95,36 +96,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveGameState = () => localStorage.setItem('pwdGameState', JSON.stringify({ unlockedLevel, highScores }));
     const loadGameState = () => { const state = JSON.parse(localStorage.getItem('pwdGameState')); if (state) { unlockedLevel = state.unlockedLevel || 1; highScores = state.highScores || [0,0,0,0,0]; } };
     
-    // --- VFX & Animations (Perfected) ---
+    // --- VFX & Animations ---
     const fireLasers = (isSuccess) => {
-        const hackers = document.querySelectorAll('.hacker');
-        const castleRect = castleContainer.getBoundingClientRect();
-        const castleCenter = { x: castleRect.left + castleRect.width / 2, y: castleRect.top + castleRect.height / 2 };
-
-        hackers.forEach(hacker => {
+        document.querySelectorAll('.hacker').forEach(hacker => {
+            const castleRect = castleContainer.getBoundingClientRect();
+            const castleCenter = { x: castleRect.left + castleRect.width / 2, y: castleRect.top + castleRect.height / 2 };
             const hackerRect = hacker.getBoundingClientRect();
             const hackerCenter = { x: hackerRect.left + hackerRect.width / 2, y: hackerRect.top + hackerRect.height / 2 };
-
+            
             const dx = castleCenter.x - hackerCenter.x, dy = castleCenter.y - hackerCenter.y;
             const distance = Math.sqrt(dx * dx + dy * dy), angle = Math.atan2(dy, dx) * 180 / Math.PI;
 
             const laser = document.createElement('div');
             laser.className = 'laser-beam';
             laser.style.cssText = `left: ${hackerCenter.x}px; top: ${hackerCenter.y}px; width: ${distance}px; transform: rotate(${angle}deg);`;
-            getEl('game-world').appendChild(laser); // Add to world layer
+            gameWorld.appendChild(laser); // Add to world layer
 
             if (!isSuccess) {
                 const spark = document.createElement('div');
                 spark.className = 'impact-spark';
                 spark.style.cssText = `left: ${castleCenter.x}px; top: ${castleCenter.y}px;`;
-                getEl('game-world').appendChild(spark);
-                setTimeout(() => spark.remove(), 300);
+                gameWorld.appendChild(spark);
+                setTimeout(() => spark.remove(), 400);
             }
-            setTimeout(() => laser.remove(), 300);
+            setTimeout(() => laser.remove(), 400);
         });
     };
     const displayShields = (success) => { shieldsContainer.innerHTML = ''; if (success) for(let i=0; i<3; i++) { const d = document.createElement('div'); d.className='shield'; d.innerHTML = SHIELD_SVG(i); shieldsContainer.appendChild(d); } };
-    const createHackers = (count) => { for(let i=0; i<count; i++) setTimeout(() => { const h=document.createElement('div'); h.className='hacker'; h.style.top=`${10+Math.random()*25}%`; h.style.animationDelay=`${Math.random()*2}s`; h.innerHTML=HACKER_SVG(); getEl('game-world').appendChild(h); setTimeout(() => h.classList.add('attack'), 50)}, i*250); };
+    const createHackers = (count) => { for(let i=0; i<count; i++) setTimeout(() => { const h=document.createElement('div'); h.className='hacker'; h.style.top=`${10+Math.random()*25}%`; h.style.animationDelay=`${Math.random()*2}s`; h.innerHTML=HACKER_SVG(); gameWorld.appendChild(h); setTimeout(() => h.classList.add('attack'), 50)}, i*250); };
     const createStars = (count) => { for(let i=0; i<count; i++) { const s = document.createElement('div'); s.className='shooting-star'; s.style.left=`${Math.random()*100}%`; s.style.top=`${Math.random()*100}%`; s.style.animationDelay=`${Math.random()*10}s`; getEl('game-background').appendChild(s) } };
     
     // --- Button Event Listeners ---

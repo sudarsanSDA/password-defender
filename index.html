@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,27 +10,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <div id="game-container">
 
         <!-- Splash Screen -->
         <div id="intro-screen" class="overlay visible">
-             <div class="overlay-content">
+            <div class="overlay-content">
                 <h1>Password Defender</h1>
-                <p>The Citadel's firewall is weakening. You must create progressively stronger passwords to energize the shields and repel the glitch swarm.</p>
+                <p>The Citadel's firewall is weakening. You must create progressively stronger passwords to energize the
+                    shields and repel the glitch swarm.</p>
                 <button id="start-btn">To the Mainframe</button>
             </div>
         </div>
 
-        <!-- Main Menu Screen -->
+        <!-- Main Menu Screen (Level Select) -->
         <div id="main-menu-screen" class="overlay">
             <div class="overlay-content">
                 <h1>Select Protocol</h1>
                 <div id="level-select-container"></div>
             </div>
         </div>
-        
-        <!-- Game Screen -->
+
+        <!-- Game Screen (Actual Gameplay) -->
         <div id="game-screen" class="hidden">
             <!-- Visuals only (background, castle) -->
             <div id="game-world">
@@ -37,28 +40,99 @@
                 <div id="world-content">
                     <div id="castle-container">
                         <div id="shields-container"></div>
-                        <!-- NEW Hyper-Detailed Castle SVG -->
-                        <svg id="castle-svg" viewBox="0 0 120 120">
-                            <defs>
-                                <linearGradient id="wall-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#E5E5E5" />
-                                    <stop offset="100%" stop-color="#C5C5C5" />
-                                </linearGradient>
-                                <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-                                    <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.2"/>
-                                </filter>
-                            </defs>
-                            <g filter="url(#shadow)">
-                                <path d="M 20 110 L 25 70 L 95 70 L 100 110 Z" fill="url(#wall-gradient)"/>
-                                <path d="M 15 110 L 15 50 L 40 50 L 40 110 Z" fill="url(#wall-gradient)"/>
-                                <path d="M 80 110 L 80 50 L 105 50 L 105 110 Z" fill="url(#wall-gradient)"/>
-                                <path d="M 45 70 L 45 40 L 75 40 L 75 70 Z" fill="url(#wall-gradient)"/>
-                                <polygon points="15,50 27.5,35 40,50" fill="#2E2E2E"/>
-                                <polygon points="80,50 92.5,35 105,50" fill="#2E2E2E"/>
-                                <polygon points="45,40 60,20 75,40" fill="#2E2E2E"/>
-                                <path d="M 50 110 C 50 90, 70 90, 70 110 Z" fill="#4A4A4A"/>
-                            </g>
-                        </svg>
+                        <svg id="castle-svg-advanced" viewBox="0 0 400 350">
+    <defs>
+        <!-- Gradients for realistic lighting -->
+        <linearGradient id="adv-wall-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#a2b2c8"/>
+            <stop offset="100%" stop-color="#647791"/>
+        </linearGradient>
+        <linearGradient id="adv-roof-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#9b59b6"/>
+            <stop offset="100%" stop-color="#5e3370"/>
+        </linearGradient>
+        <linearGradient id="adv-door-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#7a5548"/>
+            <stop offset="100%" stop-color="#543b32"/>
+        </linearGradient>
+         <linearGradient id="adv-banner-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#e74c3c"/>
+            <stop offset="100%" stop-color="#c0392b"/>
+        </linearGradient>
+
+        <!-- A more subtle shadow effect -->
+        <filter id="adv-shadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="2" dy="10" stdDeviation="8" flood-color="#000" flood-opacity="0.35"/>
+        </filter>
+
+        <!-- Pattern for brick/stone texture -->
+        <pattern id="stone-texture" patternUnits="userSpaceOnUse" width="20" height="20">
+            <rect width="20" height="20" fill="#75859e" />
+            <path d="M 0 10 L 20 10 M 10 0 L 10 20" stroke="#647791" stroke-width="1"/>
+        </pattern>
+    </defs>
+    
+    <g filter="url(#adv-shadow)">
+
+        <!-- ===== Base Platform ===== -->
+        <path d="M 10 340 L 390 340 L 400 320 L 0 320 Z" fill="#4a5668"/>
+        
+        <!-- ===== Main Keep / Central Structure ===== -->
+        <!-- Main Wall with texture -->
+        <rect x="90" y="140" width="220" height="180" fill="url(#stone-texture)" />
+        <!-- Battlement on top of Main Wall -->
+        <path d="M 90 140 L 90 130 L 110 130 L 110 140 L 130 140 L 130 130 L 150 130 L 150 140 L 170 140 L 170 130 L 190 130 L 190 140 L 210 140 L 210 130 L 230 130 L 230 140 L 250 140 L 250 130 L 270 130 L 270 140 L 290 140 L 290 130 L 310 130 L 310 140 Z" fill="url(#adv-wall-gradient)"/>
+        
+        <!-- ===== Central Tower ===== -->
+        <path d="M 140 140 L 140 60 L 260 60 L 260 140 Z" fill="url(#adv-wall-gradient)"/>
+        <!-- Battlement for Central Tower -->
+        <path d="M 140 60 L 140 50 L 155 50 L 155 60 L 170 60 L 170 50 L 185 50 L 185 60 L 200 60 L 200 50 L 215 50 L 215 60 L 230 60 L 230 50 L 245 50 L 245 60 L 260 60" fill="url(#adv-wall-gradient)"/>
+        
+        <!-- Main Spire/Roof -->
+        <polygon points="145,50 200,10 255,50" fill="url(#adv-roof-gradient)"/>
+        
+        <!-- Flag -->
+        <line x1="200" y1="10" x2="200" y2="-10" stroke="#444" stroke-width="3"/>
+        <path d="M 200 -10 L 240 -10 L 230 -5 L 240 0 L 200 0 Z" fill="url(#adv-banner-gradient)"/>
+
+        <!-- Grand Window -->
+        <path d="M 185 100 C 185 80, 215 80, 215 100 L 215 120 L 185 120 Z" fill="#333"/>
+        <path d="M 188 100 C 188 83, 212 83, 212 100 L 212 117 L 188 117 Z" fill="#f0e68c"/>
+        <circle id="adv-window-glow" cx="200" cy="100" r="10" fill="#ffc107" opacity="0.8" style="animation: pulse 3s infinite;"/>
+
+
+        <!-- ===== Gatehouse ===== -->
+        <rect x="160" y="250" width="80" height="70" fill="#000" opacity="0.2"/>
+        <path d="M 170 320 L 170 270 C 170 250, 230 250, 230 270 L 230 320 Z" fill="url(#adv-door-gradient)"/>
+
+        <!-- ===== Left Outer Tower ===== -->
+        <path d="M 40 320 L 40 120 L 120 120 L 120 320 Z" fill="url(#adv-wall-gradient)"/>
+        <!-- Left Tower Battlements -->
+        <path d="M 40 120 L 40 110 L 60 110 L 60 120 L 80 120 L 80 110 L 100 110 L 100 120 L 120 120" fill="#444"/>
+        
+        <!-- Left Top Turret -->
+        <path d="M 55 110 L 55 80 L 105 80 L 105 110 Z" fill="url(#adv-wall-gradient)"/>
+        <polygon points="55,80 80,60 105,80" fill="url(#adv-roof-gradient)"/>
+        <!-- Window -->
+        <rect x="73" y="150" width="14" height="30" fill="#222" rx="3"/>
+        
+        
+        <!-- ===== Right Outer Tower ===== -->
+        <path d="M 280 320 L 280 120 L 360 120 L 360 320 Z" fill="url(#adv-wall-gradient)"/>
+        <!-- Right Tower Battlements -->
+        <path d="M 280 120 L 280 110 L 300 110 L 300 120 L 320 120 L 320 110 L 340 110 L 340 120 L 360 120" fill="#444"/>
+
+        <!-- Right Top Turret -->
+        <path d="M 295 110 L 295 80 L 345 80 L 345 110 Z" fill="url(#adv-wall-gradient)"/>
+        <polygon points="295,80 320,60 345,80" fill="url(#adv-roof-gradient)"/>
+        <!-- Window -->
+        <rect x="313" y="150" width="14" height="30" fill="#222" rx="3"/>
+
+    </g>
+    
+    <!-- Animation for the glowing window -->
+    
+</svg>
                     </div>
                 </div>
             </div>
@@ -69,10 +143,10 @@
                     <div id="wave-display"></div>
                 </div>
                 <div class="ui-center">
-                    <p id="level-instructions-display"></p>
                     <div id="message-display"></div>
                 </div>
                 <div class="ui-footer">
+                    <p id="level-instructions-display"></p>
                     <div class="input-wrapper">
                         <input type="text" id="password-input" placeholder="Enter protocol...">
                         <button id="defend-btn">DEPLOY</button>
@@ -81,16 +155,25 @@
             </div>
         </div>
 
-        <!-- Level Complete Screen -->
+        <!-- Overlays -->
         <div id="level-complete-screen" class="overlay">
-            <div class="overlay-content"><h2>Protocol Secure</h2><div id="star-rating"></div><p>High Score for this level: <span id="level-highscore-display">0</span></p><div class="button-group"><button id="replay-btn">Replay</button><button id="next-level-btn">Next Level</button><button id="main-menu-btn-from-win">Main Menu</button></div></div>
+            <div class="overlay-content">
+                <h2>Protocol Secure</h2>
+                <div id="star-rating"></div>
+                <p>High Score for this level: <span id="level-highscore-display">0</span></p>
+                <div class="button-group"><button id="replay-btn">Replay</button><button id="next-level-btn">Next
+                        Level</button><button id="main-menu-btn-from-win">Main Menu</button></div>
+            </div>
         </div>
-        
-        <!-- Game Over Screen -->
         <div id="game-over-screen" class="overlay">
-            <div class="overlay-content"><h2>SYSTEM BREACHED</h2><p>The protocol failed. The firewall has been compromised.</p><button id="main-menu-btn-from-lose">Return to Menu</button></div>
+            <div class="overlay-content">
+                <h2>SYSTEM BREACHED</h2>
+                <p>The protocol failed. The firewall has been compromised.</p><button
+                    id="main-menu-btn-from-lose">Return to Menu</button>
+            </div>
         </div>
     </div>
     <script src="js/game.js"></script>
 </body>
+
 </html>
