@@ -1,0 +1,533 @@
+:root {
+    --font-main: 'Poppins', sans-serif;
+    --c-sky-top: #4A52A4;
+    --c-sky-bottom: #242850;
+    --c-hacker: #FF5A5A;
+    --c-shield: #30D5C8;
+    --c-text: #E0E5F5;
+    --c-glow: 0 0 12px var(--c-shield);
+    --c-star: #FFC107;
+    --timing-fast: 0.3s;
+    --timing-med: 0.5s;
+    --ease-out: cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+}
+
+body {
+    font-family: var(--font-main);
+    color: var(--c-text);
+    background-color: var(--c-sky-bottom);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* --- Screen Management --- */
+.hidden {
+    display: none !important;
+}
+
+#game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+#game-world,
+#game-ui,
+.overlay {
+    position: absolute;
+    inset: 0;
+}
+
+#game-world {
+    z-index: 1;
+    transition: filter var(--timing-med) var(--ease-out);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#game-container.game-over #game-world {
+    filter: blur(10px) brightness(0.6);
+    transform: scale(1.05);
+}
+
+/* --- World Content & Castle Centering --- */
+#game-background {
+    inset: 0;
+    position: absolute;
+    background: linear-gradient(to bottom, var(--c-sky-top), var(--c-sky-bottom));
+}
+
+#world-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+#castle-container {
+    position: relative;
+    width: clamp(160px, 40vw, 220px);
+    padding-bottom: clamp(160px, 40vw, 220px);
+}
+
+#castle-svg,
+#shields-container {
+    position: absolute;
+    inset: 0;
+}
+
+#castle-container.damage {
+    animation: shake 0.4s;
+}
+
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translateX(-1%)
+    }
+
+    20%,
+    80% {
+        transform: translateX(1%)
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translateX(-2%)
+    }
+
+    40%,
+    60% {
+        transform: translateX(2%)
+    }
+}
+
+/* --- UI Layer (Guaranteed Centered Layout) --- */
+#game-ui {
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: clamp(15px, 3vh, 30px);
+    pointer-events: none;
+}
+
+#game-ui>* {
+    pointer-events: all;
+    text-align: center;
+}
+
+.ui-header {
+    flex-shrink: 0;
+    text-align: left;
+}
+
+.ui-footer {
+    flex-shrink: 0;
+}
+
+.ui-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#level-title-display {
+    font-size: clamp(1rem, 4vw, 1.2rem);
+    text-align: center;
+    width: 100%;
+}
+
+#wave-display {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.wave-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.3);
+    transition: all var(--timing-fast);
+}
+
+.wave-dot.active {
+    background: white;
+}
+
+.wave-dot.cleared {
+    background: var(--c-shield);
+}
+
+#level-instructions-display {
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
+    margin-top: 10px;
+    min-height: 2.2em;
+}
+
+#message-display {
+    font-size: clamp(1.5rem, 6vw, 2.5rem);
+    font-weight: 700;
+    color: var(--c-shield);
+    text-shadow: var(--c-glow);
+    height: 1.2em;
+    line-height: 1.2em;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all var(--timing-fast) var(--ease-out);
+}
+
+#message-display.visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* --- NEW Main Menu & Level Buttons --- */
+#level-select-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.level-btn {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    width: 100px;
+    height: 100px;
+    border-radius: 15px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--timing-fast);
+}
+
+.level-btn.locked {
+    background: rgba(0, 0, 0, 0.3);
+    color: rgba(255, 255, 255, 0.4);
+    cursor: not-allowed;
+}
+
+.level-btn.unlocked {
+    background: rgba(0, 0, 0, 0.2);
+    border-color: var(--c-shield);
+}
+
+.level-btn.unlocked:hover {
+    background: var(--c-shield);
+    color: var(--c-sky-bottom);
+    transform: translateY(-5px);
+    box-shadow: var(--c-glow);
+}
+
+.level-btn .level-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.level-btn .level-stars {
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    color: var(--c-star);
+}
+
+/* NEW Level Complete Screen */
+#star-rating {
+    font-size: 3rem;
+    color: rgba(0, 0, 0, 0.3);
+    letter-spacing: 10px;
+    margin: 20px 0;
+}
+
+.star.filled {
+    color: var(--c-star);
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 250px;
+}
+
+@media (min-width: 768px) {
+    .button-group {
+        flex-direction: row;
+    }
+}
+
+/* General Input & Buttons */
+.input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+button {
+    font-family: var(--font-main);
+    font-size: clamp(1rem, 4vw, 1.1rem);
+    padding: 12px 18px;
+    border-radius: 50px;
+    border: 2px solid var(--c-shield);
+    width: 100%;
+    transition: all var(--timing-fast);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    background: transparent;
+    color: var(--c-shield);
+    cursor: pointer;
+}
+
+#password-input {
+    font-family: var(--font-main);
+    font-size: clamp(1rem, 4vw, 1.1rem);
+    padding: 12px 18px;
+    border-radius: 50px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    width: 100%;
+    transition: all var(--timing-fast);
+    background: rgba(0, 0, 0, 0.2);
+    color: var(--c-text);
+    text-align: center;
+}
+
+#password-input:focus {
+    outline: none;
+    border-color: var(--c-shield);
+    background: rgba(0, 0, 0, 0.5);
+}
+
+button:not(:disabled):hover {
+    background: var(--c-shield);
+    color: var(--c-sky-bottom);
+    box-shadow: var(--c-glow);
+}
+
+button:not(:disabled):active {
+    transform: scale(0.95);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Overlays & Animations (copied) */
+.overlay {
+    z-index: 100;
+    background: rgba(10, 12, 30, 0.85);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--timing-med) var(--ease-out);
+}
+
+.overlay.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.overlay-content {
+    max-width: 500px;
+    animation: slide-up var(--timing-med) var(--ease-out);
+}
+
+@keyframes slide-up {
+    from {
+        transform: translateY(20px);
+        opacity: 0
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1
+    }
+}
+
+.overlay h1,
+.overlay h2 {
+    font-size: clamp(2rem, 8vw, 3.5rem);
+    color: var(--c-shield);
+    text-shadow: var(--c-glow);
+    margin-bottom: 20px;
+}
+
+.overlay p {
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+@media (min-width: 768px) {
+    .input-wrapper {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #password-input {
+        width: 450px;
+    }
+}
+
+/* VFX (copied) */
+.laser-beam {
+    position: absolute;
+    height: 3px;
+    background-color: var(--c-hacker);
+    border-radius: 2px;
+    transform-origin: left center;
+    box-shadow: 0 0 8px var(--c-hacker);
+    animation: fire-laser 0.3s var(--ease-out) forwards;
+}
+
+@keyframes fire-laser {
+    from {
+        width: 0;
+    }
+
+    to {}
+}
+
+.impact-spark {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background: rgba(255, 90, 90, 0.5);
+    transform: translate(-50%, -50%) scale(0);
+    animation: spark-effect 0.3s var(--ease-out);
+}
+
+@keyframes spark-effect {
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+    }
+}
+
+.shield {
+    position: absolute;
+    inset: -20%;
+    animation: shield-fade-in var(--timing-med) var(--ease-out);
+}
+
+.shield svg {
+    position: absolute;
+    inset: 0;
+    transform-origin: center;
+    animation: spin 20s linear infinite;
+}
+
+.shield.shatter {
+    animation: shield-shatter 0.4s ease-out forwards;
+}
+
+@keyframes shield-fade-in {
+    from {
+        opacity: 0;
+        transform: scale(0.5)
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1)
+    }
+}
+
+@keyframes shield-shatter {
+    to {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg)
+    }
+
+    to {
+        transform: rotate(360deg)
+    }
+}
+
+.hacker {
+    position: fixed;
+    left: -100px;
+    width: clamp(60px, 12vw, 90px);
+    z-index: 15;
+    transition: left 2.5s cubic-bezier(0.4, 0, 0.6, 1);
+    animation: float 4s ease-in-out infinite;
+}
+
+.hacker.attack {
+    left: calc(50% - clamp(130px, 25vw, 180px));
+}
+
+.hacker.retreat {
+    left: calc(100% + 100px);
+    transition-duration: 1.5s;
+}
+
+.hacker svg {
+    animation: spin 10s linear infinite alternate;
+    transform-origin: center;
+}
+
+@keyframes float {
+    50% {
+        transform: translateY(-25px) rotateZ(10deg);
+    }
+}
+
+.shooting-star {
+    position: absolute;
+    width: 2px;
+    height: 80px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), transparent);
+    animation: star-fall 5s linear infinite;
+}
+
+@keyframes star-fall {
+    from {
+        transform: translateY(-200px) rotate(45deg)
+    }
+
+    to {
+        transform: translateY(120vh) rotate(45deg)
+    }
+}
