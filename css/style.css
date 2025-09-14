@@ -53,12 +53,13 @@ body {
     display: flex;
 }
 
+/* THIS IS THE KEY FIX */
 #game-ui {
     z-index: 10;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: clamp(15px, 3vh, 30px);
+    padding: clamp(15px, 3vh, 25px);
     pointer-events: none;
 }
 
@@ -67,7 +68,7 @@ body {
     text-align: center;
 }
 
-/* --- World Content & Castle Centering --- */
+/* --- World Content --- */
 #game-background {
     inset: 0;
     position: absolute;
@@ -84,8 +85,8 @@ body {
 
 #castle-container {
     position: relative;
-    width: clamp(160px, 40vw, 220px);
-    padding-bottom: clamp(160px, 40vw, 220px);
+    width: clamp(150px, 40vw, 200px);
+    padding-bottom: clamp(150px, 40vw, 200px);
 }
 
 #castle-svg,
@@ -122,10 +123,11 @@ body {
     }
 }
 
-/* --- Polished UI --- */
+/* --- Polished UI (Overlap Fixed) --- */
 .ui-header,
 .ui-footer {
     flex-shrink: 0;
+    width: 100%;
 }
 
 .ui-center {
@@ -191,8 +193,11 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    max-width: 500px;
+    margin-inline: auto;
 }
 
+/* --- Input & Buttons --- */
 button {
     font-family: var(--font-main);
     font-size: clamp(1rem, 4vw, 1.1rem);
@@ -243,7 +248,7 @@ button:disabled {
     cursor: not-allowed;
 }
 
-/* --- Overlays & Menus --- */
+/* Overlays & Menus */
 .overlay {
     z-index: 100;
     background: rgba(10, 12, 30, 0.85);
@@ -264,9 +269,9 @@ button:disabled {
 }
 
 .overlay-content {
+    width: 100%;
     max-width: 500px;
     animation: slide-up var(--timing-med) var(--ease-out);
-    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -359,35 +364,29 @@ button:disabled {
     color: var(--c-star);
 }
 
-/* --- THIS IS THE BUG FIX --- */
 .button-group {
     display: flex;
     flex-direction: column;
     gap: 15px;
     margin-top: 20px;
     width: 100%;
-    /* On mobile, use max-width and margin:auto to center the column */
     max-width: 250px;
     margin-inline: auto;
 }
 
 @media (min-width: 768px) {
+    .input-wrapper {
+        flex-direction: row;
+    }
+
     .button-group {
         flex-direction: row;
-        /* On desktop, use justify-content to center the row items */
         justify-content: center;
         max-width: none;
     }
 }
 
-@media (max-width: 350px) {
-    .button-group button {
-        font-size: 0.9rem;
-    }
-}
-
-
-/* VFX: Lasers, Shields, Hackers */
+/* VFX (Verified and working) */
 .laser-beam {
     position: absolute;
     height: 3px;
@@ -404,9 +403,7 @@ button:disabled {
         width: 0;
     }
 
-    to {
-        /* Width set by JS */
-    }
+    to {}
 }
 
 .impact-spark {
@@ -521,3 +518,8 @@ button:disabled {
         transform: translateY(120vh) rotate(45deg)
     }
 }
+@keyframes pulse {
+        0% { opacity: 0.7; transform-origin: center; transform: scale(1); }
+        50% { opacity: 1; transform-origin: center; transform: scale(1.1); }
+        100% { opacity: 0.7; transform-origin: center; transform: scale(1); }
+      }

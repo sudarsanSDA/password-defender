@@ -19,12 +19,11 @@
             <div class="overlay-content">
                 <h1>Password Defender</h1>
                 <p>The Citadel's firewall is weakening. You must create progressively stronger passwords to energize the
-                    shields and repel the glitch swarm.</p>
-                <button id="start-btn">To the Mainframe</button>
+                    shields and repel the glitch swarm.</p><button id="start-btn">To the Mainframe</button>
             </div>
         </div>
 
-        <!-- Main Menu Screen (Level Select) -->
+        <!-- Main Menu Screen -->
         <div id="main-menu-screen" class="overlay">
             <div class="overlay-content">
                 <h1>Select Protocol</h1>
@@ -32,9 +31,9 @@
             </div>
         </div>
 
-        <!-- Game Screen (Actual Gameplay) -->
+        <!-- Game Screen -->
         <div id="game-screen" class="hidden">
-            <!-- Visuals only (background, castle) -->
+            <!-- Visuals -->
             <div id="game-world">
                 <div id="game-background"></div>
                 <div id="world-content">
@@ -136,7 +135,7 @@
                     </div>
                 </div>
             </div>
-            <!-- UI only (buttons, text) -->
+            <!-- UI Layer with fixed layout -->
             <div id="game-ui">
                 <div class="ui-header">
                     <h2 id="level-title-display"></h2>
@@ -145,6 +144,7 @@
                 <div class="ui-center">
                     <div id="message-display"></div>
                 </div>
+                <!-- Instructions are now part of the footer -->
                 <div class="ui-footer">
                     <p id="level-instructions-display"></p>
                     <div class="input-wrapper">
