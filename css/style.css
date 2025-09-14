@@ -30,7 +30,7 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* --- Screen Management --- */
+/* --- Screen Management & Layout Fix --- */
 .hidden {
     display: none !important;
 }
@@ -56,12 +56,21 @@ body {
     justify-content: center;
 }
 
-#game-container.game-over #game-world {
-    filter: blur(10px) brightness(0.6);
-    transform: scale(1.05);
+#game-ui {
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: clamp(15px, 3vh, 30px);
+    pointer-events: none;
 }
 
-/* --- World Content & Castle Centering --- */
+#game-ui>* {
+    pointer-events: all;
+    text-align: center;
+}
+
+/* --- World Content (Background & Centered Castle) --- */
 #game-background {
     inset: 0;
     position: absolute;
@@ -116,31 +125,14 @@ body {
     }
 }
 
-/* --- UI Layer (Guaranteed Centered Layout) --- */
-#game-ui {
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: clamp(15px, 3vh, 30px);
-    pointer-events: none;
-}
-
-#game-ui>* {
-    pointer-events: all;
-    text-align: center;
-}
-
-.ui-header {
-    flex-shrink: 0;
-    text-align: left;
-}
-
+/* --- Polished UI --- */
+.ui-header,
 .ui-footer {
     flex-shrink: 0;
 }
 
 .ui-center {
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -149,15 +141,13 @@ body {
 
 #level-title-display {
     font-size: clamp(1rem, 4vw, 1.2rem);
-    text-align: center;
-    width: 100%;
+    margin-bottom: 10px;
 }
 
 #wave-display {
     display: flex;
     justify-content: center;
     gap: 8px;
-    margin-top: 10px;
 }
 
 .wave-dot {
@@ -178,8 +168,9 @@ body {
 
 #level-instructions-display {
     font-size: clamp(0.8rem, 2.5vw, 1rem);
-    margin-top: 10px;
+    margin-top: 15px;
     min-height: 2.2em;
+    font-weight: 500;
 }
 
 #message-display {
@@ -199,85 +190,7 @@ body {
     transform: scale(1);
 }
 
-/* --- NEW Main Menu & Level Buttons --- */
-#level-select-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 30px;
-}
-
-.level-btn {
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    width: 100px;
-    height: 100px;
-    border-radius: 15px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: all var(--timing-fast);
-}
-
-.level-btn.locked {
-    background: rgba(0, 0, 0, 0.3);
-    color: rgba(255, 255, 255, 0.4);
-    cursor: not-allowed;
-}
-
-.level-btn.unlocked {
-    background: rgba(0, 0, 0, 0.2);
-    border-color: var(--c-shield);
-}
-
-.level-btn.unlocked:hover {
-    background: var(--c-shield);
-    color: var(--c-sky-bottom);
-    transform: translateY(-5px);
-    box-shadow: var(--c-glow);
-}
-
-.level-btn .level-number {
-    font-size: 2.5rem;
-    font-weight: 700;
-}
-
-.level-btn .level-stars {
-    font-size: 0.8rem;
-    letter-spacing: 2px;
-    color: var(--c-star);
-}
-
-/* NEW Level Complete Screen */
-#star-rating {
-    font-size: 3rem;
-    color: rgba(0, 0, 0, 0.3);
-    letter-spacing: 10px;
-    margin: 20px 0;
-}
-
-.star.filled {
-    color: var(--c-star);
-}
-
-.button-group {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: 20px;
-    width: 100%;
-    max-width: 250px;
-}
-
-@media (min-width: 768px) {
-    .button-group {
-        flex-direction: row;
-    }
-}
-
-/* General Input & Buttons */
+/* --- Input & Buttons --- */
 .input-wrapper {
     display: flex;
     flex-direction: column;
@@ -334,7 +247,7 @@ button:disabled {
     cursor: not-allowed;
 }
 
-/* Overlays & Animations (copied) */
+/* --- Main Menu & Overlays --- */
 .overlay {
     z-index: 100;
     background: rgba(10, 12, 30, 0.85);
@@ -385,11 +298,81 @@ button:disabled {
     margin-bottom: 30px;
 }
 
+#level-select-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.level-btn {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    width: 100px;
+    height: 100px;
+    border-radius: 15px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--timing-fast);
+}
+
+.level-btn.locked {
+    background: rgba(0, 0, 0, 0.3);
+    color: rgba(255, 255, 255, 0.4);
+    cursor: not-allowed;
+}
+
+.level-btn.unlocked {
+    background: rgba(0, 0, 0, 0.2);
+    border-color: var(--c-shield);
+}
+
+.level-btn.unlocked:hover {
+    background: var(--c-shield);
+    color: var(--c-sky-bottom);
+    transform: translateY(-5px);
+    box-shadow: var(--c-glow);
+}
+
+.level-btn .level-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.level-btn .level-stars {
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    color: var(--c-star);
+}
+
+#star-rating {
+    font-size: 3rem;
+    color: rgba(0, 0, 0, 0.3);
+    letter-spacing: 10px;
+    margin: 20px 0;
+}
+
+.star.filled {
+    color: var(--c-star);
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 250px;
+}
+
 @media (min-width: 768px) {
-    .input-wrapper {
+
+    .input-wrapper,
+    .button-group {
         flex-direction: row;
-        align-items: center;
-        justify-content: center;
     }
 
     #password-input {
@@ -397,11 +380,12 @@ button:disabled {
     }
 }
 
-/* VFX (copied) */
+/* --- VFX: Lasers, Shields, Hackers (Perfected) --- */
 .laser-beam {
     position: absolute;
     height: 3px;
     background-color: var(--c-hacker);
+    z-index: 20;
     border-radius: 2px;
     transform-origin: left center;
     box-shadow: 0 0 8px var(--c-hacker);
@@ -413,7 +397,9 @@ button:disabled {
         width: 0;
     }
 
-    to {}
+    to {
+        /* Width set by JS */
+    }
 }
 
 .impact-spark {
@@ -422,6 +408,7 @@ button:disabled {
     height: 20px;
     border-radius: 50%;
     border: 2px solid white;
+    z-index: 21;
     background: rgba(255, 90, 90, 0.5);
     transform: translate(-50%, -50%) scale(0);
     animation: spark-effect 0.3s var(--ease-out);
@@ -495,7 +482,7 @@ button:disabled {
 }
 
 .hacker.attack {
-    left: calc(50% - clamp(130px, 25vw, 180px));
+    left: calc(50% - clamp(130px, 30vw, 200px));
 }
 
 .hacker.retreat {
@@ -520,6 +507,7 @@ button:disabled {
     height: 80px;
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), transparent);
     animation: star-fall 5s linear infinite;
+    z-index: 0;
 }
 
 @keyframes star-fall {
